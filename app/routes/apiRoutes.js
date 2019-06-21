@@ -22,17 +22,17 @@ module.exports = function (app) {
     app.post("/api/friends", function (req, res) {
         var totalDifference = 1000000;
         var friend = {};
-        tableData.forEach(element => {
-            var num = element.scores.reduce((a, b) => Number(a) + Number(b));
-            if (Math.abs(num - req.body.scores.reduce((a, b) => Number(a) + Number(b), 0)) < totalDifference) {
-                totalDifference = Math.abs(num - req.body.scores.reduce((a, b) => Number(a) + Number(b), 0));
-                friend = element;
-            }
-        });
-
         for (let i = 0; i < req.body.scores.length; i++) {
             req.body.scores[i] = Number(req.body.scores[i]);
         }
+
+        tableData.forEach(element => {
+            var num = element.scores.reduce((a, b) => a + b);
+            if (Math.abs(num - req.body.scores.reduce((a, b) => a + b, 0)) < totalDifference) {
+                totalDifference = Math.abs(num - req.body.scores.reduce((a, b) => a + b, 0));
+                friend = element;
+            }
+        });
 
         tableData.push(req.body);
         res.json(friend);
